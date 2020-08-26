@@ -8,7 +8,9 @@
 }
 
 body {
-  background-color: #000;
+  min-height: 100vh;
+  background-color: #0e141b;
+  color: #1765ad;
 }
 
 #container404 {
