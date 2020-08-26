@@ -1,15 +1,12 @@
 import React, { Component } from "react";
-// Provider
-import AppProvider from "./Context-hoc/AppProvider";
+// Context
+import WithApp from "./Context-hoc/WithApp";
 
 class App extends Component {
+  componentDidMount() {}
   render() {
     return <div></div>;
   }
 }
 
-export default (
-  <AppProvider>
-    <App />
-  </AppProvider>
-);
+export default WithApp(App);
