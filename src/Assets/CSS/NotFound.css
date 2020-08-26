@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900");
+#fakebody {
+  height: 100vh;
+  width: 100vw;
+}
+
+#container404 {
+  font-family: "Poppins", sans-serif;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+#container404 .content404 {
+  max-width: 600px;
+  text-align: center;
+}
+
+#container404 .content404 h2 {
+  font-size: 18vw;
+  color: #eeeeee;
+  line-height: 1em;
+}
+#container404 .content404 .little {
+  font-size: 4vw;
+  color: #cf1818;
+  line-height: 2em;
+}
+#container404 .content404 h4 {
+  position: relative;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #111;
+  background: #eeeeee;
+  font-weight: 300;
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+#container404 .content404 p {
+  color: #eeeeee;
+  font-size: 1.2em;
+}
+
+#container404 .content404 a {
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  display: inline-block;
+  padding: 10px 25px;
+  background: #ff0562;
+  color: #eeeeee;
+  margin-top: 25px;
+  border-radius: 5px;
+  -webkit-box-shadow: 20px 20px 60px #1a1d2d, -20px -20px 60px #24273d;
+  box-shadow: 20px 20px 60px #1a1d2d, -20px -20px 60px #24273d;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+#container404 .content404 a:hover {
+  background-color: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+#container404 .content404 a::after {
+  content: "";
+  height: 2px;
+  width: 162.578px;
+  left: -162.578px;
+  background-color: #fff;
+  position: absolute;
+  bottom: -2px;
+  opacity: 0;
+}
+
+#container404 .content404 a:hover::after {
+  opacity: 1;
+  left: 0;
+  -webkit-animation: RtL 0.5s ease-in 0s 1;
+  animation: RtL 0.5s ease-in 0s 1;
+}
+
+@-webkit-keyframes RtL {
+  from {
+    opacity: 0;
+    left: -162.578px;
+  }
+  to {
+    opacity: 1;
+    left: 0;
+  }
+}
+
+@keyframes RtL {
+  from {
+    opacity: 0;
+    left: -162.578px;
+  }
+  to {
+    opacity: 1;
+    left: 0;
+  }
+}

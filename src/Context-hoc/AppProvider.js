@@ -7,13 +7,12 @@ import AppContext from "./AppContext";
 class AppProvider extends Component {
   state = {
     // Les info de toute les music dans AllMusicInfo et quand cliker sur une on demande le mp3 et on le met dans musicPartNow
-    AllMusicInfo: { lolita: "5648" },
+    AllMusicInfo: {},
     musicPartNow: {},
   };
 
   componentDidMount() {
     // Call
-    this.setState({ AllMusicInfo: "d" });
   }
 
   render() {
