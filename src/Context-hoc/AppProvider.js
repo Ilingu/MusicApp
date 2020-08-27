@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 // Fn
-import { GETMusic } from "../includes/fonctions";
+// import { GETMusic } from "../includes/fonctions";
 // Context
 import AppContext from "./AppContext";
 

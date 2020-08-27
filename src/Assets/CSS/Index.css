@@ -8,9 +8,23 @@
 }
 
 body {
-  min-height: 100vh;
-  background-color: #0e141b;
-  color: #1765ad;
+  background-color: #0e141b !important;
+  color: #1765ad !important;
+}
+
+hr {
+  background-color: #1765ad;
+}
+
+.fa-check-circle {
+  color: #34611d;
+}
+
+#Mp3Player {
+  margin-left: calc(50% - 45%);
+  margin-top: calc(25% - 181px / 2);
+  text-align: center;
+  width: 90%;
 }
 
 #container404 {
