@@ -8,7 +8,6 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { createUploadLink } from "apollo-upload-client";
 // Components
 import App from "./App";
-import PlayerMp3 from "./Components/PlayerMp3";
 import NotFound from "./Error/NotFound";
 // Context
 import AppProvider from "./Context-hoc/AppProvider";
@@ -35,7 +34,6 @@ const Root = () => (
   <Router>
     <Switch>
       <Route exact path="/" component={WrappedAppProvider} />
-      <Route exact path="/Mp3Player" component={PlayerMp3} />
       <Route component={NotFound} />
     </Switch>
   </Router>

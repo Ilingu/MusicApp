@@ -1,0 +1,9 @@
+# Groupe 1
+User-agent: Googlebot
+Disallow: /static/
+Disallow: /Img/
+Disallow: /index.html
+
+# Groupe 2
+User-agent: *
+Allow: /

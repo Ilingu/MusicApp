@@ -8,23 +8,12 @@
 }
 
 body {
-  background-color: #0e141b !important;
-  color: #1765ad !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 hr {
-  background-color: #1765ad;
-}
-
-.fa-check-circle {
-  color: #34611d;
-}
-
-#Mp3Player {
-  margin-left: calc(50% - 45%);
-  margin-top: calc(25% - 181px / 2);
-  text-align: center;
-  width: 90%;
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 #container404 {
