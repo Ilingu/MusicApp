@@ -12,8 +12,9 @@ import NotFound from "./Error/NotFound";
 // Context
 import AppProvider from "./Context-hoc/AppProvider";
 // CSS
-import "./Assets/CSS/Index.css";
+import "./CSS/Index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "antd/dist/antd.css";
 // PWA
 import * as serviceWorker from "./serviceWorker";
 

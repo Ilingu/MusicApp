@@ -1,10 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 // import gql from "graphql-tag";
 // import { Mutation } from "react-apollo";
+// Components
+import Header from "./Components/Design/Header";
 // Context
 import WithApp from "./Context-hoc/WithApp";
 // Design
-import { Button, Alert } from "react-bootstrap";
+import { notification, message } from "antd";
 
 // Graphql
 // const uploadFileMutation = gql`
@@ -14,11 +16,20 @@ import { Button, Alert } from "react-bootstrap";
 
 class App extends Component {
   state = {
-    AlertsParams: [null, null],
+    MusicPage: true,
   };
 
   render() {
-    return <div></div>;
+    const { MusicPage } = this.state;
+
+    return (
+      <Fragment>
+        <Header
+          MusicPage={MusicPage}
+          ChangeMusicPage={(bool) => this.setState({ MusicPage: bool })}
+        />
+      </Fragment>
+    );
   }
 }
 

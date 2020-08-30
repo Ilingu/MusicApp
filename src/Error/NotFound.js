@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 // CSS
-import "../Assets/CSS/NotFound.css";
+import "../CSS/NotFound.css";
 
 const NotFound = () => {
   window.addEventListener("mousemove", (event) => {
@@ -18,7 +18,10 @@ const NotFound = () => {
 
   return (
     <div id="fakebody">
-      <div id="container404">
+      <div
+        id="container404"
+        style={{ background: "url('Img/p404.png'), #151729" }}
+      >
         <div className="content404">
           <h2>404</h2>
           <h4>

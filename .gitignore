@@ -4,8 +4,8 @@
 /node_modules
 /src/lambda
 /src/includes
-/src/Assets/CSS/Index.scss
-/src/Assets/CSS/Index.css.map
+/src/CSS/Index.scss
+/src/CSS/Index.css.map
 
 # testing
 /coverage

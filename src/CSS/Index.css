@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
+}
+
+body {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+hr {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+a {
+  text-decoration: none !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+#Header {
+  position: relative;
+}
+
+#Header .nav {
+  position: relative;
+  background-color: #301c4d;
+}
+
+#Header .nav .nav-item {
+  margin-left: 10px;
+}
+
+#Header .nav .nav-item .nav-link {
+  margin-top: calc(50% - 46px / 2);
+  color: rgba(255, 255, 255, 0.274);
+  border: 1px solid #301c4d !important;
+}
+
+#Header .nav .nav-item .nav-link span {
+  font-size: 25px;
+}
+
+#Header .nav .nav-item .nav-link.active {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid #301c4d !important;
+}
+
+#Header .nav #User {
+  position: absolute;
+  right: 10px;
+}
+/*# sourceMappingURL=Index.css.map */
