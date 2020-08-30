@@ -1,6 +1,8 @@
 // Module
 import React from "react";
 import { Link } from "react-router-dom";
+// Components
+import Header from "../Components/Design/Header";
 // CSS
 import "../CSS/NotFound.css";
 
@@ -18,6 +20,7 @@ const NotFound = () => {
 
   return (
     <div id="fakebody">
+      <Header mode404={true} />
       <div
         id="container404"
         style={{ background: "url('Img/p404.png'), #151729" }}

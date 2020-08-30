@@ -36,8 +36,8 @@ a {
 
 #Header .nav .nav-item .nav-link {
   margin-top: calc(50% - 46px / 2);
-  color: rgba(255, 255, 255, 0.274);
-  border: 1px solid #301c4d !important;
+  color: rgba(255, 255, 255, 0.274) !important;
+  border: 1px solid #301c4d;
 }
 
 #Header .nav .nav-item .nav-link span {
@@ -46,8 +46,8 @@ a {
 
 #Header .nav .nav-item .nav-link.active {
   background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-  border: 1px solid #301c4d !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid #301c4d;
 }
 
 #Header .nav #User {

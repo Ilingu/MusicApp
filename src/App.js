@@ -27,6 +27,7 @@ class App extends Component {
         <Header
           MusicPage={MusicPage}
           ChangeMusicPage={(bool) => this.setState({ MusicPage: bool })}
+          mode404={false}
         />
       </Fragment>
     );
