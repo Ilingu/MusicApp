@@ -84,27 +84,29 @@ class MusicMenu extends Component {
           style={{ height: `${this.props.proportion[1]}%` }}
         >
           {/* Dynamic */}
-          <div className="Playlist active" id="1">
-            <span className="fas fa-music"></span> NamePlaylist
+          <div className="Playlist bloc active" id="1">
+            NamePlaylist
           </div>
-          <div className="Playlist" id="2">
-            <span className="fas fa-music"></span> NamePlaylist
+          <div className="Playlist bloc" id="2">
+            NamePlaylist
           </div>
-          <div className="Playlist" id="3">
-            <span className="fas fa-music"></span> NamePlaylist
+          <div className="Playlist bloc" id="3">
+            NamePlaylist
           </div>
-          <div className="Playlist" id="4">
-            <span className="fas fa-music"></span> NamePlaylist
-          </div>
-          <div className="New Playlist" id="4">
-            <span className="fas fa-plus"></span> New Playlist
+          <div className="Playlist bloc" id="4">
+            NamePlaylist
           </div>
           <div id="resizeR" className="resize R"></div>
           <div id="resizeB" className="resize B"></div>
         </div>
         <div id="settings" style={{ height: `${this.props.proportion[2]}%` }}>
           <div id="resizeR2" className="resize R"></div>
-          <span className="fas fa-cog fa-spin"></span> Paramètres
+          <div className="NewPlaylist bloc">
+            <span className="fas fa-plus"></span> New Playlist
+          </div>
+          <div className="settings bloc">
+            <span className="fas fa-cog fa-spin"></span> Paramètres
+          </div>
         </div>
       </aside>
     );
