@@ -1,39 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap");
-@-webkit-keyframes arrowRtoL {
-  from {
-    left: 100%;
-  }
-  to {
-    left: 0;
-  }
-}
-@keyframes arrowRtoL {
-  from {
-    left: 100%;
-  }
-  to {
-    left: 0;
-  }
-}
-
-@-webkit-keyframes arrowLtoR {
-  from {
-    left: -100%;
-  }
-  to {
-    left: 100%;
-  }
-}
-
-@keyframes arrowLtoR {
-  from {
-    left: -100%;
-  }
-  to {
-    left: 100%;
-  }
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -43,6 +8,7 @@
 }
 
 body {
+  min-height: 100vh;
   background-color: rgba(255, 255, 255, 0.85) !important;
   color: rgba(255, 255, 255, 0.85) !important;
 }
@@ -54,6 +20,27 @@ hr {
 a {
   text-decoration: none !important;
   color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.resize {
+  position: absolute;
+  background-color: rgba(173, 173, 173, 0.7);
+}
+
+#resizeB {
+  height: 1.5px;
+  width: 100%;
+  bottom: 0;
+  cursor: ns-resize;
+}
+
+#resizeR,
+#resizeR2 {
+  width: 1.5px;
+  height: 100%;
+  right: 0;
+  top: 0;
+  cursor: ew-resize;
 }
 
 #Header {
@@ -112,5 +99,37 @@ a {
 #Header .nav #User {
   position: absolute;
   right: 10px;
+}
+
+#Music {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  height: calc(100vh - 58px);
+  color: #757575;
+}
+
+#Music #Menu {
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+#Music #Menu #PlaylistContainer {
+  position: relative;
+  overflow: auto;
+}
+
+#Music #Menu #PlaylistContainer .Playlist {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 20px;
+}
+
+#Music #Menu #settings {
+  position: relative;
 }
 /*# sourceMappingURL=Index.css.map */

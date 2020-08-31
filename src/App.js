@@ -3,6 +3,7 @@ import React, { Component, Fragment } from "react";
 // import { Mutation } from "react-apollo";
 // Components
 import Header from "./Components/Design/Header";
+import Music from "./Components/App/Static/Music";
 // Context
 import WithApp from "./Context-hoc/WithApp";
 // Design
@@ -29,6 +30,7 @@ class App extends Component {
           ChangeMusicPage={(bool) => this.setState({ MusicPage: bool })}
           mode404={false}
         />
+        <Music />
       </Fragment>
     );
   }

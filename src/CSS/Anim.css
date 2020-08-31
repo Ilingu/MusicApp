@@ -1,6 +1,6 @@
 @-webkit-keyframes arrowRtoL {
   from {
-    left: 100%;
+    left: 135%;
   }
   to {
     left: 2px;
@@ -9,7 +9,7 @@
 
 @keyframes arrowRtoL {
   from {
-    left: 100%;
+    left: 135%;
   }
   to {
     left: 2px;
