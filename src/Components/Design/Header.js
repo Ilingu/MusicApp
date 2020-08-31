@@ -17,6 +17,7 @@ const Header = ({ MusicPage, ChangeMusicPage, mode404 }) => (
         <Fragment>
           <Nav.Item>
             <Nav.Link
+              id="NL1"
               active={MusicPage}
               onClick={() => (MusicPage ? null : ChangeMusicPage(true))}
             >
@@ -25,6 +26,7 @@ const Header = ({ MusicPage, ChangeMusicPage, mode404 }) => (
           </Nav.Item>
           <Nav.Item>
             <Nav.Link
+              id="NL2"
               active={!MusicPage}
               onClick={() => (!MusicPage ? null : ChangeMusicPage(false))}
             >

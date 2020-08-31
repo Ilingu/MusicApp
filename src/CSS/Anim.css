@@ -1,0 +1,36 @@
+@-webkit-keyframes arrowRtoL {
+  from {
+    left: 100%;
+  }
+  to {
+    left: 2px;
+  }
+}
+
+@keyframes arrowRtoL {
+  from {
+    left: 100%;
+  }
+  to {
+    left: 2px;
+  }
+}
+
+@-webkit-keyframes arrowLtoR {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 50%;
+  }
+}
+
+@keyframes arrowLtoR {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 50%;
+  }
+}
+/*# sourceMappingURL=Anim.css.map */

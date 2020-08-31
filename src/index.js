@@ -13,6 +13,7 @@ import NotFound from "./Error/NotFound";
 import AppProvider from "./Context-hoc/AppProvider";
 // CSS
 import "./CSS/Index.css";
+import "./CSS/Anim.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/antd.css";
 // PWA

@@ -6,7 +6,7 @@ import Header from "./Components/Design/Header";
 // Context
 import WithApp from "./Context-hoc/WithApp";
 // Design
-import { notification, message } from "antd";
+// import { notification, message } from "antd";
 
 // Graphql
 // const uploadFileMutation = gql`

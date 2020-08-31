@@ -6,6 +6,8 @@
 /src/includes
 /src/CSS/Index.scss
 /src/CSS/Index.css.map
+/src/CSS/Anim.scss
+/src/CSS/Anim.css.map
 
 # testing
 /coverage
