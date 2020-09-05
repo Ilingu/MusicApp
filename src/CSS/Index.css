@@ -101,6 +101,10 @@ a {
   right: 10px;
 }
 
+#Header .nav #User span {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 #Music {
   display: -webkit-box;
   display: -ms-flexbox;

@@ -37,10 +37,8 @@ const Header = ({ MusicPage, ChangeMusicPage, mode404 }) => (
       )}
 
       <Nav.Item id="User">
-        <Nav.Link>
-          <Link to="User">
-            <span className="fas fa-user-alt"></span>
-          </Link>
+        <Nav.Link href="User">
+          <span className="fas fa-user-alt"></span>
         </Nav.Link>
       </Nav.Item>
     </Nav>

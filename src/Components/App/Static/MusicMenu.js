@@ -1,4 +1,21 @@
 import React, { Component } from "react";
+import gql from "graphql-tag";
+import { Mutation } from "react-apollo";
+// Design
+import { Input } from "antd";
+import { CheckOutlined } from "@ant-design/icons";
+
+const { Search } = Input;
+// Graphql
+
+const ADD_PLAYLIST = gql`
+  mutation AddPlaylist($name: String!) {
+    addPlaylist(name: $name) {
+      id
+      name
+    }
+  }
+`;
 
 class MusicMenu extends Component {
   resizeEl = () => {
@@ -96,12 +113,28 @@ class MusicMenu extends Component {
           <div className="Playlist bloc" id="4">
             NamePlaylist
           </div>
+          {this.props.newP ? (
+            <Mutation mutation={ADD_PLAYLIST}>
+              {(addPlaylist, { data }) => (
+                <Search
+                  placeholder="Name Playlist"
+                  onSearch={(value) => {
+                    if (this.props.addPlaylist(value)) {
+                      addPlaylist({ variables: { name: value } });
+                    }
+                  }}
+                  enterButton={<CheckOutlined />}
+                  style={{ width: `${this.props.proportion[0]}px` }}
+                />
+              )}
+            </Mutation>
+          ) : null}
           <div id="resizeR" className="resize R"></div>
           <div id="resizeB" className="resize B"></div>
         </div>
         <div id="settings" style={{ height: `${this.props.proportion[2]}%` }}>
           <div id="resizeR2" className="resize R"></div>
-          <div className="NewPlaylist bloc">
+          <div className="NewPlaylist bloc" onClick={this.props.onClickNewP}>
             <span className="fas fa-plus"></span> New Playlist
           </div>
           <div className="settings bloc">
