@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 // Components
 import Menu from "./MusicMenu";
 import Playlist from "./Playlist";
@@ -9,6 +8,7 @@ import { notification } from "antd";
 class Music extends Component {
   state = {
     proportion: JSON.parse(window.localStorage.getItem("Proportion")),
+    active: "",
     newP: false,
   };
 
@@ -40,7 +40,7 @@ class Music extends Component {
   };
 
   render() {
-    const { proportion, newP } = this.state;
+    const { proportion, newP, active } = this.state;
 
     if (
       !proportion ||
@@ -65,6 +65,8 @@ class Music extends Component {
           saveProportion={this.saveProportion}
           onClickNewP={() => this.setState({ newP: true })}
           addPlaylist={this.addPlaylist}
+          newActive={(id) => this.setState({ active: id })}
+          ActivePlaylist={active}
           newP={newP}
         />
         <Playlist />

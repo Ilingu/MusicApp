@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import { createUploadLink } from "apollo-upload-client";
+// import { createUploadLink } from "apollo-upload-client";
 // Components
 import App from "./App";
 import NotFound from "./Error/NotFound";
@@ -20,13 +20,14 @@ import "antd/dist/antd.css";
 import * as serviceWorker from "./serviceWorker";
 
 const client = new ApolloClient({
-  link: createUploadLink({ uri: "https://incra-api.glitch.me/graphql" }),
+  // link: createUploadLink({ uri: "https://incra-api.glitch.me/graphql" }),
+  uri: "https://incra-api.glitch.me/graphql",
   cache: new InMemoryCache(),
 });
 
 const WrappedAppProvider = () => (
   <ApolloProvider client={client}>
-    <AppProvider>
+    <AppProvider client={client}>
       <App />
     </AppProvider>
   </ApolloProvider>

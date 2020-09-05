@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
+// Context
+import WithApp from "../../../Context-hoc/WithApp";
 // Design
 import { Input } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
@@ -11,7 +13,7 @@ const { Search } = Input;
 const ADD_PLAYLIST = gql`
   mutation AddPlaylist($name: String!) {
     addPlaylist(name: $name) {
-      id
+      _id
       name
     }
   }
@@ -94,33 +96,43 @@ class MusicMenu extends Component {
   }
 
   render() {
+    const { AllMusicInfo } = this.props.context.state;
+
+    const PlaylistJSX = AllMusicInfo.map((data, i) => (
+      <div
+        key={i}
+        className={`Playlist bloc${
+          this.props.ActivePlaylist === data._id ? " active" : ""
+        }`}
+        onClick={() =>
+          this.props.ActivePlaylist === data._id
+            ? this.props.newActive("")
+            : this.props.newActive(data._id)
+        }
+      >
+        {data.name}
+      </div>
+    ));
+
     return (
       <aside id="Menu" style={{ width: `${this.props.proportion[0]}px` }}>
         <div
           id="PlaylistContainer"
           style={{ height: `${this.props.proportion[1]}%` }}
         >
-          {/* Dynamic */}
-          <div className="Playlist bloc active" id="1">
-            NamePlaylist
-          </div>
-          <div className="Playlist bloc" id="2">
-            NamePlaylist
-          </div>
-          <div className="Playlist bloc" id="3">
-            NamePlaylist
-          </div>
-          <div className="Playlist bloc" id="4">
-            NamePlaylist
-          </div>
+          {PlaylistJSX}
+
           {this.props.newP ? (
             <Mutation mutation={ADD_PLAYLIST}>
               {(addPlaylist, { data }) => (
                 <Search
                   placeholder="Name Playlist"
-                  onSearch={(value) => {
+                  onSearch={async (value) => {
                     if (this.props.addPlaylist(value)) {
-                      addPlaylist({ variables: { name: value } });
+                      const added = await addPlaylist({
+                        variables: { name: value },
+                      });
+                      this.props.context.refresh(added.data.addPlaylist);
                     }
                   }}
                   enterButton={<CheckOutlined />}
@@ -146,4 +158,4 @@ class MusicMenu extends Component {
   }
 }
 
-export default MusicMenu;
+export default WithApp(MusicMenu);
