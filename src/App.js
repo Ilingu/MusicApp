@@ -1,19 +1,10 @@
 import React, { Component, Fragment } from "react";
-// import gql from "graphql-tag";
-// import { Mutation } from "react-apollo";
 // Components
 import Header from "./Components/Design/Header";
 import Music from "./Components/App/Static/Music";
 // Context
 import WithApp from "./Context-hoc/WithApp";
 // Design
-// import { notification, message } from "antd";
-
-// Graphql
-// const uploadFileMutation = gql`
-//   mutation($file: Upload!) {
-//   }
-// `;
 
 class App extends Component {
   state = {

@@ -69,7 +69,11 @@ class Music extends Component {
           ActivePlaylist={active}
           newP={newP}
         />
-        <Playlist />
+        <Playlist
+          ActivePlaylist={active}
+          newActive={(id) => this.setState({ active: id })}
+          proportion={!proportion ? [200, 70, 30] : proportion}
+        />
       </section>
     );
   }

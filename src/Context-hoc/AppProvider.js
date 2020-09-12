@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import gql from "graphql-tag";
 // Context
 import AppContext from "./AppContext";
+// Fn
+import { GETMusic } from "../includes/fonctions";
 
 class AppProvider extends Component {
   state = {
@@ -10,19 +11,8 @@ class AppProvider extends Component {
     musicPartNow: {},
   };
 
-  componentDidMount() {
-    this.props.client
-      .query({
-        query: gql`
-          {
-            playlists {
-              _id
-              name
-            }
-          }
-        `,
-      })
-      .then(({ data }) => this.setState({ AllMusicInfo: data.playlists }));
+  async componentDidMount() {
+    this.setState({ AllMusicInfo: await GETMusic(this.props.client) });
   }
 
   refresh = (added) =>

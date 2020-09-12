@@ -182,4 +182,22 @@ a {
 #Music #Menu #settings .settings:active {
   color: rgba(17, 17, 17, 0.815);
 }
+
+#Music #PlaylistWithMusic.Spinner,
+#Music #PlaylistWithMusic.non-selection {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#Music #PlaylistWithMusic.Spinner span:hover,
+#Music #PlaylistWithMusic.non-selection span:hover {
+  color: rgba(17, 17, 17, 0.815);
+}
 /*# sourceMappingURL=Index.css.map */
