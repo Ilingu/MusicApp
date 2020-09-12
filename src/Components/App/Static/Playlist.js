@@ -1,23 +1,52 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+// Components
+import Header from "../../Design/HeaderMusic";
 // Context
-import WithApp from "../../../Context-hoc/WithApp";
+import AppContext from "../../../Context/AppContext";
 // Design
 import { Spinner } from "react-bootstrap";
 import { Menu, Dropdown } from "antd";
 
 class Playlist extends Component {
+  static contextType = AppContext;
+
   state = {
-    AllMusic: null,
+    noPlaylist: false,
   };
 
-  render() {
-    const { AllMusic } = this.state;
-    const { ActivePlaylist } = this.props;
+  Spinning = () => {
+    let Spinners = [];
+    let colors = ["danger", "info", "warning", "primary", "secondary", "dark"];
+    for (let i = 0; i < 6; i++) {
+      Spinners = [
+        colors[i] === "danger" ? (
+          <Spinner key={i} animation="border" variant={colors[i]} />
+        ) : (
+          <Spinner key={i} animation="border" variant={colors[i]}>
+            <span>{Spinners}</span>
+          </Spinner>
+        ),
+      ];
+    }
+    return Spinners;
+  };
 
-    if (ActivePlaylist === "") {
+  timeoutSpinning = setTimeout(() => this.setState({ noPlaylist: true }), 3000);
+
+  render() {
+    const { noPlaylist } = this.state;
+    const { ActivePlaylist } = this.props;
+    const { AllMusicInfo } = this.context.state;
+
+    const PlaylistInfo = AllMusicInfo.filter(
+      (PlaylistObj) => PlaylistObj._id === ActivePlaylist
+    )[0];
+
+    if (AllMusicInfo.length) {
+      clearTimeout(this.timeoutSpinning);
       const overlay = (
         <Menu>
-          {this.props.context.state.AllMusicInfo.map((data, i) => (
+          {AllMusicInfo.map((data, i) => (
             <Menu.Item
               key={i}
               onClick={() =>
@@ -34,53 +63,57 @@ class Playlist extends Component {
       return (
         <aside
           id="PlaylistWithMusic"
-          className="non-selection"
+          className={
+            ActivePlaylist === "" ||
+            !PlaylistInfo.MusicInside ||
+            !PlaylistInfo.MusicInside.length
+              ? "non-selection"
+              : ""
+          }
           style={{ width: `${window.innerWidth - this.props.proportion[0]}px` }}
         >
-          <Dropdown overlay={overlay}>
-            <span>Veuillez Selectionez une playlist</span>
-          </Dropdown>
+          {ActivePlaylist === "" ? (
+            <Dropdown overlay={overlay}>
+              <span>Veuillez Selectionez une playlist</span>
+            </Dropdown>
+          ) : (
+            <Fragment>
+              <Header
+                ImgUrl={PlaylistInfo.ImageURL}
+                name={PlaylistInfo.name}
+                nbMusic={PlaylistInfo.MusicInside.length}
+                TpsTotal="En Travaux"
+              />
+              <div id="containerMusicList">
+                {!PlaylistInfo.MusicInside ||
+                !PlaylistInfo.MusicInside.length ? (
+                  <span>Aucune(s) musique(s) dans {PlaylistInfo.name}</span>
+                ) : null}
+              </div>
+            </Fragment>
+          )}
         </aside>
       );
-    } else if (!AllMusic) {
-      let Spinners = [];
-      let colors = [
-        "danger",
-        "info",
-        "warning",
-        "primary",
-        "secondary",
-        "dark",
-      ];
-      for (let i = 0; i < 6; i++) {
-        Spinners = [
-          colors[i] === "danger" ? (
-            <Spinner key={i} animation="border" variant={colors[i]} />
-          ) : (
-            <Spinner key={i} animation="border" variant={colors[i]}>
-              <span>{Spinners}</span>
-            </Spinner>
-          ),
-        ];
-      }
+    } else if (!AllMusicInfo.length) {
       return (
         <aside
           id="PlaylistWithMusic"
           className="Spinner"
-          style={{ width: `${window.innerWidth - this.props.proportion[0]}px` }}
+          style={{
+            width: `${window.innerWidth - this.props.proportion[0]}px`,
+          }}
         >
-          {Spinners}
+          {noPlaylist ? (
+            <span onClick={this.props.onClickNewP}>
+              Vous n'avez pas de Playlist, créez en une !
+            </span>
+          ) : (
+            this.Spinning()
+          )}
         </aside>
-      );
-    } else {
-      return (
-        <aside
-          id="PlaylistWithMusic"
-          style={{ width: `${window.innerWidth - this.props.proportion[0]}px` }}
-        ></aside>
       );
     }
   }
 }
 
-export default WithApp(Playlist);
+export default Playlist;

@@ -71,6 +71,7 @@ class Music extends Component {
         />
         <Playlist
           ActivePlaylist={active}
+          onClickNewP={() => this.setState({ newP: true })}
           newActive={(id) => this.setState({ active: id })}
           proportion={!proportion ? [200, 70, 30] : proportion}
         />

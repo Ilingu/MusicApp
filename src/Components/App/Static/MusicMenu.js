@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import axios from "axios";
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 // Context
-import WithApp from "../../../Context-hoc/WithApp";
+import AppContext from "../../../Context/AppContext";
 // Design
 import { Input } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
@@ -11,15 +12,18 @@ const { Search } = Input;
 // Graphql
 
 const ADD_PLAYLIST = gql`
-  mutation AddPlaylist($name: String!) {
-    addPlaylist(name: $name) {
+  mutation AddPlaylist($name: String!, $ImageURL: String!) {
+    addPlaylist(name: $name, ImageURL: $ImageURL) {
       _id
       name
+      ImageURL
     }
   }
 `;
 
 class MusicMenu extends Component {
+  static contextType = AppContext;
+
   resizeEl = () => {
     const resize_elR = document.querySelectorAll(".resize.R");
     const resize_elB = document.getElementById("resizeB");
@@ -91,12 +95,17 @@ class MusicMenu extends Component {
     );
   };
 
-  componentDidMount() {
+  GetRdaMemes = async () => {
+    return (await axios.get("https://api.imgflip.com/get_memes")).data.data
+      .memes[Math.round(Math.random() * 99)].url;
+  };
+
+  async componentDidMount() {
     this.resizeEl();
   }
 
   render() {
-    const { AllMusicInfo } = this.props.context.state;
+    const { AllMusicInfo } = this.context.state;
 
     const PlaylistJSX = AllMusicInfo.map((data, i) => (
       <div
@@ -130,9 +139,12 @@ class MusicMenu extends Component {
                   onSearch={async (value) => {
                     if (this.props.addPlaylist(value)) {
                       const added = await addPlaylist({
-                        variables: { name: value },
+                        variables: {
+                          name: value,
+                          ImageURL: await this.GetRdaMemes(),
+                        },
                       });
-                      this.props.context.refresh(added.data.addPlaylist);
+                      this.context.refresh(added.data.addPlaylist);
                     }
                   }}
                   enterButton={<CheckOutlined />}
@@ -158,4 +170,4 @@ class MusicMenu extends Component {
   }
 }
 
-export default WithApp(MusicMenu);
+export default MusicMenu;
