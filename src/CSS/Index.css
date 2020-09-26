@@ -48,6 +48,23 @@ a {
   cursor: ew-resize;
 }
 
+.Modal {
+  text-align: center;
+}
+
+.Modal .ModalH,
+.Modal .ModalF {
+  background-color: #301c4d !important;
+}
+
+.Modal .ModalB {
+  background-color: rgba(117, 117, 117, 0.712);
+}
+
+.Modal .ModalB .ouClass {
+  font-size: 20px;
+}
+
 #Header {
   position: relative;
 }

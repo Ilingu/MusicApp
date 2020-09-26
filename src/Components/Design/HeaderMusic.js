@@ -1,8 +1,43 @@
 import React from "react";
 // Design
 import { Button } from "react-bootstrap";
+import { Dropdown, Menu } from "antd";
 
-const HeaderMusic = ({ ImgUrl, name, nbMusic, TpsTotal, title, author }) => {
+const HeaderMusic = ({
+  ImgUrl,
+  name,
+  nbMusic,
+  TpsTotal,
+  title,
+  author,
+  volume,
+  time,
+  fn,
+}) => {
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <Button variant="primary" block onClick={fn[1]}>
+          <span className="fas fa-play"></span> Lecture
+        </Button>
+      </Menu.Item>
+      <Menu.Item>
+        <Button variant="success" block onClick={fn[0]}>
+          <span className="fas fa-plus"></span> 🎵
+        </Button>
+      </Menu.Item>
+      <Menu.Item>
+        <Button variant="info" block onClick={fn[2]}>
+          <span className="fas fa-edit"></span>
+        </Button>
+      </Menu.Item>
+      <Menu.Item>
+        <Button variant="danger" block onClick={fn[3]}>
+          <span className="fas fa-trash"></span>
+        </Button>
+      </Menu.Item>
+    </Menu>
+  );
   return (
     <header>
       <div className="info">
@@ -28,9 +63,11 @@ const HeaderMusic = ({ ImgUrl, name, nbMusic, TpsTotal, title, author }) => {
         <Button className="BouttonPerso" variant="light">
           Aléatoire <span className="fas fa-random"></span>
         </Button>
-        <Button className="BouttonPerso" variant="light">
-          <span className="fas fa-caret-down"></span>
-        </Button>
+        <Dropdown overlay={menu} placement="bottomLeft">
+          <Button className="BouttonPerso" variant="light">
+            <span className="fas fa-caret-down"></span>
+          </Button>
+        </Dropdown>
       </div>
     </header>
   );
