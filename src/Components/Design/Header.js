@@ -18,6 +18,7 @@ const Header = ({ MusicPage, ChangeMusicPage, mode404 }) => (
           <Nav.Item>
             <Nav.Link
               id="NL1"
+              title="Ma musique"
               active={MusicPage}
               onClick={() => (MusicPage ? null : ChangeMusicPage(true))}
             >
@@ -27,6 +28,7 @@ const Header = ({ MusicPage, ChangeMusicPage, mode404 }) => (
           <Nav.Item>
             <Nav.Link
               id="NL2"
+              title="YT Downloader"
               active={!MusicPage}
               onClick={() => (!MusicPage ? null : ChangeMusicPage(false))}
             >

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import axios from "axios";
-import ytdl from "ytdl";
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 // Components
@@ -79,9 +78,6 @@ class Playlist extends Component {
       YTURL.split("/")[3] !== undefined &&
       YTURL.split("/")[3] !== ""
     ) {
-      ytdl(YTURL, {
-        format: "mp4",
-      }).pipe();
     } else if (
       Method === 2 &&
       NameOfMusic !== undefined &&
@@ -259,7 +255,7 @@ class Playlist extends Component {
             </Modal.Body>
             <Modal.Footer className="ModalF">
               <Button variant="secondary" onClick={this.CloseModal}>
-                Close
+                Annuler
               </Button>
             </Modal.Footer>
           </Modal>
@@ -287,6 +283,7 @@ class Playlist extends Component {
                         <Form.Label>Votre URL Youtube</Form.Label>
                         <Form.Control
                           type="text"
+                          autoComplete="off"
                           value={YTURL}
                           onChange={(event) =>
                             this.setState({ YTURL: event.target.value })
@@ -303,6 +300,7 @@ class Playlist extends Component {
                         <Form.Label>Nom de la musique</Form.Label>
                         <Form.Control
                           type="text"
+                          autoComplete="off"
                           value={NameOfMusic}
                           onChange={(event) =>
                             this.setState({ NameOfMusic: event.target.value })
@@ -348,7 +346,7 @@ class Playlist extends Component {
             </Modal.Body>
             <Modal.Footer className="ModalF">
               <Button variant="secondary" onClick={this.CloseModal}>
-                Close
+                Annuler
               </Button>
               <Button variant="success" onClick={this.SubmitMusic}>
                 <span className="fas fa-plus"></span> Submit

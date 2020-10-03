@@ -2,6 +2,7 @@ import React, { Component } from "react";
 // Components
 import Header from "./Components/Design/Header";
 import Music from "./Components/App/Static/Music";
+import YtDownloader from "./Components/App/Static/YtDownloader";
 // Context
 import AppContext from "./Context/AppContext";
 // Fn
@@ -40,7 +41,7 @@ class App extends Component {
           ChangeMusicPage={(bool) => this.setState({ MusicPage: bool })}
           mode404={false}
         />
-        <Music />
+        {MusicPage ? <Music /> : <YtDownloader />}
       </AppContext.Provider>
     );
   }
