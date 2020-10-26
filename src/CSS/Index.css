@@ -279,6 +279,25 @@ a {
 }
 
 #YTLD {
+  position: relative;
   text-align: center;
+  min-height: calc(100vh - 58px);
+}
+
+#YTLD #contentYTLD #SpinYTDL {
+  position: absolute;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  font-size: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  top: calc(50% - 47px / 2);
+  left: calc(50% - 167px / 2);
 }
 /*# sourceMappingURL=Index.css.map */

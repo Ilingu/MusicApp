@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import axios from "axios";
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 // Components
