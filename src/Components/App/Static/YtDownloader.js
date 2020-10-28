@@ -1,22 +1,18 @@
-import React, { useState, Fragment } from "react";
-import gql from "graphql-tag";
-import { Query } from "react-apollo";
+import React, { useState } from "react";
+import toWav from "audiobuffer-to-wav";
+import xhr from "xhr";
+// Fn
+import { apiCall } from "../../../includes/fonctions";
 // Desing
 import { Form, Button } from "react-bootstrap";
 import { notification, Spin } from "antd";
-
-const GETYTMusicFile = gql`
-  query FileYT($url: String!) {
-    FileYT(url: $url)
-  }
-`;
 
 const YtDownloader = () => {
   // State
   const [YTURL, setYTURL] = useState("");
   const [OnDownload, setDownload] = useState(false);
   const [OnFinished, setFinished] = useState(false);
-  const [Base64, setBase64] = useState("");
+  const [DataFile, setDataFile] = useState(new ArrayBuffer());
   // App
   const checkURL = (url) => {
     if (
@@ -31,6 +27,15 @@ const YtDownloader = () => {
     } else {
       return false;
     }
+  };
+
+  const MakeDownload = (wav) => {
+    var new_file = URL.createObjectURL(new Blob([wav], { type: "audio/wav" }));
+
+    var download_link = document.getElementById("download_link");
+    download_link.href = new_file;
+    var name = "IncraYTDownloader.wav";
+    download_link.download = name;
   };
 
   const Download = async (event) => {
@@ -49,18 +54,35 @@ const YtDownloader = () => {
     notification["success"]({
       message: "Votre Requête a bien été envoyer",
       description:
-        "Vueillez patienter un peu le temps de téléchargement de la vidéo et de son convertissage en format mp3 (selon la taille ça durera plus ou moins longtemps, en tant normal ça dure environ entre 15s et 1min 30s)",
+        "Vueillez patienter un peu le temps de téléchargement de la vidéo et de son convertissage en format wav (selon la taille ça durera plus ou moins longtemps, en tant normal ça dure environ entre 15s et 1min 30s)",
+    });
+    apiCall("/Getfile", "POST", { url: YTURL }, (res) => {
+      const BufferRes = res.FileMusic.data;
+      setDataFile(BufferRes);
+      setDownload(false);
+      setYTURL("");
+      setFinished(true);
     });
   };
 
-  // const make_download = (base64) => {
-  //   var new_file = URL.createObjectURL(base64);
-
-  //   var download_link = document.getElementById("download_link");
-  //   download_link.href = new_file;
-  //   var name = "IncraYTDownloader.mp3";
-  //   download_link.download = name;
-  // };
+  if (OnFinished) {
+    const audioCtx = new (AudioContext || window.webkitAudioContext)();
+    xhr(
+      {
+        uri: `data:audio/mp3;base64,${Buffer.from(DataFile).toString(
+          "base64"
+        )}`,
+        responseType: "arraybuffer",
+      },
+      function (err, body, resp) {
+        if (err) console.error(err);
+        audioCtx.decodeAudioData(resp, function (buffer) {
+          const wav = toWav(buffer);
+          MakeDownload(wav);
+        });
+      }
+    );
+  }
 
   // Render
   return (
@@ -72,28 +94,36 @@ const YtDownloader = () => {
 
       <div id="contentYTLD">
         {OnFinished ? (
-          <Fragment>
-            <audio controls src={Base64}>
-              Your browser does not support the
-              <code>audio</code> element.
-            </audio>
-            <a href={Base64}>Télécharger</a>
-          </Fragment>
-        ) : null}
-        {OnDownload && !OnFinished ? (
-          <Fragment>
-            <Spin id="SpinYTDL" tip="Loading..." size="large"></Spin>
-            <Query query={GETYTMusicFile} variables={{ url: YTURL }}>
-              {({ loading, error, data }) => {
-                if (loading) return null;
-                if (error) return `Error! ${error}`;
-                const buf = Buffer.from(data.FileYT).toString("base64");
-                setBase64(`data:audio/mp3;base64,${buf}`);
-                setFinished(true);
-                return <div></div>;
+          <div id="DownloadYTFile">
+            <audio
+              controls
+              src={`data:audio/wav;base64,${Buffer.from(DataFile).toString(
+                "base64"
+              )}`}
+            ></audio>
+            <a
+              href="/Home"
+              onClick={() => {
+                setFinished(false);
+                setDataFile(new ArrayBuffer());
               }}
-            </Query>
-          </Fragment>
+              id="download_link"
+            >
+              <span className="fas fa-download"></span> Télécharger
+            </a>
+            <Button
+              variant="outline-primary"
+              onClick={() => {
+                setFinished(false);
+                setDataFile(new ArrayBuffer());
+              }}
+            >
+              <span className="fas fa-arrow-left"></span> Retour
+            </Button>
+          </div>
+        ) : null}{" "}
+        {OnDownload && !OnFinished ? (
+          <Spin id="SpinYTDL" tip="Loading..." size="large"></Spin>
         ) : !OnDownload && !OnFinished ? (
           <Form onSubmit={Download}>
             <Form.Group controlId="yturl">

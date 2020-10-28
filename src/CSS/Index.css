@@ -284,6 +284,28 @@ a {
   min-height: calc(100vh - 58px);
 }
 
+#YTLD #contentYTLD #DownloadYTFile {
+  position: relative;
+  padding: 10px;
+  background-color: #fdfdfd;
+  outline: none;
+  height: 131px;
+}
+
+#YTLD #contentYTLD #DownloadYTFile #download_link {
+  display: block;
+  color: rgba(17, 17, 17, 0.815) !important;
+  font-size: 20px;
+  margin-top: 20px;
+}
+
+#YTLD #contentYTLD #DownloadYTFile button {
+  position: absolute;
+  border-radius: 50px;
+  top: calc(50% - 38px / 2);
+  left: calc(50% - 94px - 250px);
+}
+
 #YTLD #contentYTLD #SpinYTDL {
   position: absolute;
   -webkit-user-select: none;
