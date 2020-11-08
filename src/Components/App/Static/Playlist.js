@@ -58,7 +58,6 @@ class Playlist extends Component {
     Method: 1,
     // Form
     YTURL: "",
-    NameOfMusic: "",
     File: "",
     IsGoodForRequest: false,
     // Modal
@@ -68,7 +67,7 @@ class Playlist extends Component {
 
   SubmitMusic = (event) => {
     event.preventDefault();
-    const { Method, File, YTURL, NameOfMusic } = this.state;
+    const { Method, File, YTURL } = this.state;
 
     if (
       Method === 1 &&
@@ -76,14 +75,6 @@ class Playlist extends Component {
       YTURL.split("/")[2] === "www.youtube.com" &&
       YTURL.split("/")[3] !== undefined &&
       YTURL.split("/")[3] !== ""
-    ) {
-    } else if (
-      Method === 2 &&
-      NameOfMusic !== undefined &&
-      NameOfMusic !== null &&
-      typeof NameOfMusic === "string" &&
-      NameOfMusic.trim().length !== 0 &&
-      NameOfMusic !== ""
     ) {
     } else if (Method === 3 && File.length === 1) {
     } else {
@@ -151,7 +142,6 @@ class Playlist extends Component {
       ModalAddMusic,
       Method,
       YTURL,
-      NameOfMusic,
     } = this.state;
     const { ActivePlaylist } = this.props;
     const { AllMusicInfo } = this.context.state;
@@ -229,11 +219,7 @@ class Playlist extends Component {
               <Modal.Title>Choisie comment ajouter ta music</Modal.Title>
             </Modal.Header>
             <Modal.Body id="Choose" className="ModalB">
-              {[
-                "Url Youtube",
-                "Rechercher par le nom",
-                "Depuis un fichier (mp3...)",
-              ].map((txt, i) => (
+              {["Url Youtube", "Depuis un fichier (mp3...)"].map((txt, i) => (
                 <Fragment key={i}>
                   <Button
                     variant="secondary"
@@ -266,11 +252,7 @@ class Playlist extends Component {
           >
             <Modal.Header className="ModalH" closeButton>
               <Modal.Title>
-                {Method === 1
-                  ? "Music par URL YT"
-                  : Method === 2
-                  ? "Recherche par le nom"
-                  : "Depuis un fichier"}
+                {Method === 1 ? "Music par URL YT" : "Depuis un fichier"}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body className="ModalB">
@@ -292,23 +274,6 @@ class Playlist extends Component {
                         <Form.Text className="text-muted">
                           L'URL doit obligatoirement venir de Youtube (ex:
                           https://www.youtube.com/watch?v=MtN1YnoL46Q)
-                        </Form.Text>
-                      </Form.Group>
-                    ) : Method === 2 ? (
-                      <Form.Group controlId="name">
-                        <Form.Label>Nom de la musique</Form.Label>
-                        <Form.Control
-                          type="text"
-                          autoComplete="off"
-                          value={NameOfMusic}
-                          onChange={(event) =>
-                            this.setState({ NameOfMusic: event.target.value })
-                          }
-                          placeholder="Nom, ex: Thriller"
-                        />
-                        <Form.Text className="text-muted">
-                          Pas de ponctuation, écrivez juste le nom de la musique
-                          et rien d'autres
                         </Form.Text>
                       </Form.Group>
                     ) : (
