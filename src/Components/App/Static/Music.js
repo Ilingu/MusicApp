@@ -52,7 +52,15 @@ class Music extends Component {
           name,
           ImageURL: await this.GetRdaMemes(),
         },
-        () => {
+        (result) => {
+          if (result === false) {
+            notification["error"]({
+              message: "Erreur Playlist non ajouté",
+              description:
+                "Un problème à eu lieu lors de l'enregistrement de la Playlist (ce n'est pas de votre faute), vérifier votre connection et veuillez réessayer plus tard",
+            });
+            return;
+          }
           this.context.refresh();
           this.setState({ newP: false });
         }

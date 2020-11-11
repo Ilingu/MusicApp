@@ -7,6 +7,8 @@ import YtDownloader from "./Components/App/Static/YtDownloader";
 import AppContext from "./Context/AppContext";
 // Fn
 import { apiCall } from "./includes/fonctions";
+// Design
+import { notification } from "antd";
 
 class App extends Component {
   state = {
@@ -18,14 +20,28 @@ class App extends Component {
 
   componentDidMount() {
     apiCall("/Playlist/all", "GET", {}, (result) => {
-      if (result === false) return;
+      if (result === false) {
+        notification["error"]({
+          message: "Erreur Music non ajouté",
+          description:
+            "Un problème à eu lieu lors de l'enregistrement de la Music (ce n'est pas de votre faute), vérifier votre connection et veuillez réessayer plus tard",
+        });
+        return;
+      }
       this.setState({ AllMusicInfo: result });
     });
   }
 
   refresh = () =>
     apiCall("/Playlist/all", "GET", {}, (result) => {
-      if (result === false) return;
+      if (result === false) {
+        notification["error"]({
+          message: "Erreur Music non ajouté",
+          description:
+            "Un problème à eu lieu lors de l'enregistrement de la Music (ce n'est pas de votre faute), vérifier votre connection et veuillez réessayer plus tard",
+        });
+        return;
+      }
       this.setState({ AllMusicInfo: result });
     });
 

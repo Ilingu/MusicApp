@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
+import axios from "axios";
 // Components
 import Header from "../../Design/HeaderMusic";
+import Song from "../Dyna/Song";
 // Context
 import AppContext from "../../../Context/AppContext";
 // Fn
@@ -31,7 +33,11 @@ class Playlist extends Component {
     ModalAddMusic: false,
   };
 
-  GetMusicInfo = async () => {};
+  GetMusicInfo = async (url) => (await axios.get(url)).data;
+
+  remplaceString = (str, remplace) => {
+    return str.split(remplace[0]).join(remplace[1]);
+  };
 
   SubmitMusic = async (event) => {
     event.preventDefault();
@@ -53,12 +59,54 @@ class Playlist extends Component {
       nameArtist !== ""
     ) {
       const { PlaylistInfoSave } = this.state;
-      const MusicInfo = await this.GetMusicInfo(
-        `https://theaudiodb.com/api/v1/json/1/searchtrack.php?s=${nameArtist}&t=${titleMusic}`
+      let ImageRoute = null;
+      let IsGood = true;
+      let MusicInfo = await this.GetMusicInfo(
+        `https://theaudiodb.com/api/v1/json/1/searchtrack.php?s=${this.remplaceString(
+          nameArtist.toLowerCase(),
+          [" ", "%20"]
+        )}&t=${titleMusic.toLowerCase()}`
       );
-      apiCall("/Playlist/addMusic", "POST", {
-        idPlaylist: PlaylistInfoSave._id,
-      });
+      if (MusicInfo.track === null)
+        MusicInfo = await this.GetMusicInfo(
+          `https://www.theaudiodb.com/api/v1/json/1/search.php?s=${nameArtist}`
+        );
+
+      ImageRoute = MusicInfo.track || MusicInfo.artists;
+      if (!ImageRoute) IsGood = false;
+
+      message.success(
+        "Processus enclenchée: Ne vous inquiété pas l'enregistrement d'une musique est assez long (jusqu'à 3min, au délas de ce temps il y a une erreur)",
+        7
+      );
+
+      apiCall(
+        "/Playlist/addMusic",
+        "POST",
+        {
+          idPlaylist: PlaylistInfoSave._id,
+          ImageUrl: IsGood
+            ? ImageRoute[0][
+                MusicInfo.track ? "strTrackThumb" : "strArtistThumb"
+              ]
+            : null,
+          title: titleMusic,
+          author: nameArtist,
+          method: ["ytdl", YTURL],
+        },
+        (result) => {
+          if (result === false) {
+            notification["error"]({
+              message: "Erreur Music non ajouté",
+              description:
+                "Un problème à eu lieu lors de l'enregistrement de la Music (ce n'est pas de votre faute), vérifier votre connection et veuillez réessayer plus tard",
+            });
+            return;
+          }
+          this.context.refresh();
+          message.success(`Votre music a bien enregistrée !`, 3);
+        }
+      );
     } else if (
       Method === 3 &&
       File.length === 1 &&
@@ -107,6 +155,9 @@ class Playlist extends Component {
     this.setState({
       ModalChooseMethod: false,
       ModalAddMusic: false,
+      titleMusic: "",
+      nameArtist: "",
+      YTURL: "",
     });
   };
 
@@ -143,12 +194,34 @@ class Playlist extends Component {
     const { ActivePlaylist } = this.props;
     const { AllMusicInfo } = this.context.state;
 
+    let MusicList = null;
     const PlaylistInfo = AllMusicInfo.filter(
       (PlaylistObj) => PlaylistObj._id === ActivePlaylist
     )[0];
 
     if (PlaylistInfo && PlaylistInfo !== PlaylistInfoSave) {
       this.setState({ PlaylistInfoSave: PlaylistInfo });
+    }
+
+    if (
+      PlaylistInfo &&
+      PlaylistInfo.MusicInside &&
+      PlaylistInfo.MusicInside.length > 0
+    ) {
+      MusicList = PlaylistInfo.MusicInside.map((data, i) => {
+        console.log(data, i);
+        return (
+          <Song
+            key={i}
+            id={data.dbFilename}
+            title={data.title}
+            author={data.author}
+            imageUrl={data.ImageUrl}
+            AllMusicInfo={AllMusicInfo}
+            ActivePlaylist={ActivePlaylist}
+          />
+        );
+      });
     }
 
     if (AllMusicInfo.length) {
@@ -210,7 +283,9 @@ class Playlist extends Component {
                   >
                     Aucune musique dans {PlaylistInfo.name}
                   </span>
-                ) : null}
+                ) : (
+                  MusicList
+                )}
               </div>
             </Fragment>
           )}
@@ -282,7 +357,7 @@ class Playlist extends Component {
                       onChange={(event) =>
                         this.setState({ titleMusic: event.target.value })
                       }
-                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                      placeholder="Thriller"
                     />
                     <Form.Label>Nom de l'artiste</Form.Label>
                     <Form.Control
@@ -292,7 +367,7 @@ class Playlist extends Component {
                       onChange={(event) =>
                         this.setState({ nameArtist: event.target.value })
                       }
-                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                      placeholder="Michael Jackson"
                     />
                     <Form.Text className="text-muted">
                       L'URL doit obligatoirement venir de Youtube (ex:

@@ -22,7 +22,7 @@ const Root = () => (
   </Router>
 );
 
-// http://api.music-story.com/oauth/request_token?oauth_consumer_key=b630dc2fcc3852b15492c02b3a5a5617122c10f3&oauth_signature=chollet
+// https://www.theaudiodb.com/api_guide.php
 
 ReactDOM.render(<Root />, document.getElementById("root"));
 
