@@ -1,82 +1,76 @@
 import React, { Component, Fragment } from "react";
-import gql from "graphql-tag";
-import { Mutation } from "react-apollo";
 // Components
 import Header from "../../Design/HeaderMusic";
 // Context
 import AppContext from "../../../Context/AppContext";
+// Fn
+import { apiCall } from "../../../includes/fonctions";
 // Design
 import { Modal, Spinner, Button, Form } from "react-bootstrap";
 import { Menu, Dropdown, Modal as MDCD, message, notification } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const { confirm } = MDCD;
-// GraphQl
-const ADD_MUSIC = gql`
-  mutation addMusicInPL(
-    $idPlaylist: String!
-    $title: String!
-    $idLinkToMp3: String!
-    $author: String!
-    $ImageUrl: String
-  ) {
-    addMusicInPL(
-      idPlaylist: $idPlaylist
-      title: $title
-      idLinkToMp3: $idLinkToMp3
-      author: $author
-      ImageUrl: $ImageUrl
-    ) {
-      _id
-      MusicInside
-    }
-  }
-`;
-
-const ADD_AUDIO = gql`
-  mutation audioUpload($file: Upload) {
-    addMusicInPL(file: $file) {
-      _id
-      MusicInside {
-        _id
-        idLinkToMp3
-        title
-        author
-        ImageUrl
-      }
-    }
-  }
-`;
 
 class Playlist extends Component {
   static contextType = AppContext;
 
   state = {
-    PlaylistInfo: null,
+    PlaylistInfoSave: null,
     noPlaylist: false,
     Play: false,
     Method: 1,
     // Form
     YTURL: "",
     File: "",
+    titleMusic: "",
+    nameArtist: "",
     IsGoodForRequest: false,
     // Modal
     ModalChooseMethod: false,
     ModalAddMusic: false,
   };
 
-  SubmitMusic = (event) => {
+  GetMusicInfo = async () => {};
+
+  SubmitMusic = async (event) => {
     event.preventDefault();
-    const { Method, File, YTURL } = this.state;
+    const { Method, File, YTURL, titleMusic, nameArtist } = this.state;
 
     if (
       Method === 1 &&
       (YTURL.split("/")[0] === "http:" || YTURL.split("/")[0] === "https:") &&
       YTURL.split("/")[2] === "www.youtube.com" &&
       YTURL.split("/")[3] !== undefined &&
-      YTURL.split("/")[3] !== ""
+      YTURL.split("/")[3] !== "" &&
+      titleMusic &&
+      typeof titleMusic === "string" &&
+      titleMusic.trim().length !== 0 &&
+      titleMusic !== "" &&
+      nameArtist &&
+      typeof nameArtist === "string" &&
+      nameArtist.trim().length !== 0 &&
+      nameArtist !== ""
     ) {
-    } else if (Method === 3 && File.length === 1) {
+      const { PlaylistInfoSave } = this.state;
+      const MusicInfo = await this.GetMusicInfo(
+        `https://theaudiodb.com/api/v1/json/1/searchtrack.php?s=${nameArtist}&t=${titleMusic}`
+      );
+      apiCall("/Playlist/addMusic", "POST", {
+        idPlaylist: PlaylistInfoSave._id,
+      });
+    } else if (
+      Method === 3 &&
+      File.length === 1 &&
+      titleMusic &&
+      typeof titleMusic === "string" &&
+      titleMusic.trim().length !== 0 &&
+      titleMusic !== "" &&
+      nameArtist &&
+      typeof nameArtist === "string" &&
+      nameArtist.trim().length !== 0 &&
+      nameArtist !== ""
+    ) {
     } else {
       notification["error"]({
         message: "Error",
@@ -137,10 +131,13 @@ class Playlist extends Component {
 
   render() {
     const {
+      PlaylistInfoSave,
       noPlaylist,
       ModalChooseMethod,
       ModalAddMusic,
       Method,
+      titleMusic,
+      nameArtist,
       YTURL,
     } = this.state;
     const { ActivePlaylist } = this.props;
@@ -149,6 +146,10 @@ class Playlist extends Component {
     const PlaylistInfo = AllMusicInfo.filter(
       (PlaylistObj) => PlaylistObj._id === ActivePlaylist
     )[0];
+
+    if (PlaylistInfo && PlaylistInfo !== PlaylistInfoSave) {
+      this.setState({ PlaylistInfoSave: PlaylistInfo });
+    }
 
     if (AllMusicInfo.length) {
       clearTimeout(this.timeoutSpinning);
@@ -204,7 +205,11 @@ class Playlist extends Component {
               <div id="containerMusicList">
                 {!PlaylistInfo.MusicInside ||
                 !PlaylistInfo.MusicInside.length ? (
-                  <span>Aucune(s) musique(s) dans {PlaylistInfo.name}</span>
+                  <span
+                    onClick={() => this.setState({ ModalChooseMethod: true })}
+                  >
+                    Aucune musique dans {PlaylistInfo.name}
+                  </span>
                 ) : null}
               </div>
             </Fragment>
@@ -256,57 +261,87 @@ class Playlist extends Component {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body className="ModalB">
-              <Mutation mutation={ADD_MUSIC}>
-                {(addMusicInPL, { data }) => (
-                  <Form onSubmit={this.SubmitMusic}>
-                    {Method === 1 ? (
-                      <Form.Group controlId="yturl">
-                        <Form.Label>Votre URL Youtube</Form.Label>
-                        <Form.Control
-                          type="text"
-                          autoComplete="off"
-                          value={YTURL}
-                          onChange={(event) =>
-                            this.setState({ YTURL: event.target.value })
-                          }
-                          placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
-                        />
-                        <Form.Text className="text-muted">
-                          L'URL doit obligatoirement venir de Youtube (ex:
-                          https://www.youtube.com/watch?v=MtN1YnoL46Q)
-                        </Form.Text>
-                      </Form.Group>
-                    ) : (
-                      <Mutation mutation={ADD_AUDIO}>
-                        {(audioUpload, { data }) => (
-                          <Form.Group>
-                            <label htmlFor="audioFile">
-                              Choose file to upload
-                            </label>
-                            <br />
-                            <input
-                              type="file"
-                              onChange={(event) => {
-                                this.setState({ File: event.target.files[0] });
-                                message.success(
-                                  `The File ${event.target.files[0].name} has been saved correcty,`,
-                                  5
-                                );
-                                message.info(
-                                  "Maintenant qu'il est sauvegardé, tu peux faire autres choses et ajouter ce morceaux après",
-                                  9
-                                );
-                              }}
-                              id="audioFile"
-                              accept=".mp3, .wav"
-                            />
-                          </Form.Group>
-                        )}
-                      </Mutation>
-                    )}
-                  </Form>
+              <Form onSubmit={this.SubmitMusic}>
+                {Method === 1 ? (
+                  <Form.Group controlId="yturl">
+                    <Form.Label>L'URL Youtube liée à la musique</Form.Label>
+                    <Form.Control
+                      type="text"
+                      autoComplete="off"
+                      value={YTURL}
+                      onChange={(event) =>
+                        this.setState({ YTURL: event.target.value })
+                      }
+                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                    />
+                    <Form.Label>Nom de la Musique</Form.Label>
+                    <Form.Control
+                      type="text"
+                      autoComplete="off"
+                      value={titleMusic}
+                      onChange={(event) =>
+                        this.setState({ titleMusic: event.target.value })
+                      }
+                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                    />
+                    <Form.Label>Nom de l'artiste</Form.Label>
+                    <Form.Control
+                      type="text"
+                      autoComplete="off"
+                      value={nameArtist}
+                      onChange={(event) =>
+                        this.setState({ nameArtist: event.target.value })
+                      }
+                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                    />
+                    <Form.Text className="text-muted">
+                      L'URL doit obligatoirement venir de Youtube (ex:
+                      https://www.youtube.com/watch?v=MtN1YnoL46Q)
+                    </Form.Text>
+                  </Form.Group>
+                ) : (
+                  <Form.Group>
+                    <label htmlFor="audioFile">Choose file to upload</label>
+                    <br />
+                    <input
+                      type="file"
+                      onChange={(event) => {
+                        this.setState({ File: event.target.files[0] });
+                        message.success(
+                          `The File ${event.target.files[0].name} has been saved correcty,`,
+                          5
+                        );
+                        message.info(
+                          "Maintenant qu'il est sauvegardé, tu peux faire autres choses et ajouter ce morceaux après",
+                          9
+                        );
+                      }}
+                      id="audioFile"
+                      accept=".mp3, .wav"
+                    />
+                    <Form.Label>Nom de la Musique</Form.Label>
+                    <Form.Control
+                      type="text"
+                      autoComplete="off"
+                      value={titleMusic}
+                      onChange={(event) =>
+                        this.setState({ titleMusic: event.target.value })
+                      }
+                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                    />
+                    <Form.Label>Nom de l'artiste</Form.Label>
+                    <Form.Control
+                      type="text"
+                      autoComplete="off"
+                      value={nameArtist}
+                      onChange={(event) =>
+                        this.setState({ nameArtist: event.target.value })
+                      }
+                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                    />
+                  </Form.Group>
                 )}
-              </Mutation>
+              </Form>
             </Modal.Body>
             <Modal.Footer className="ModalF">
               <Button variant="secondary" onClick={this.CloseModal}>

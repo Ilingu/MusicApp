@@ -158,6 +158,27 @@ a {
   padding-top: 10px;
 }
 
+#Music #Menu #PlaylistContainer #ActionFastPL .fa-edit,
+#Music #Menu #PlaylistContainer #ActionFastPL .fa-trash {
+  position: absolute;
+  top: 2.5px;
+  right: 30px;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+#Music #Menu #PlaylistContainer #ActionFastPL .fa-edit {
+  right: 50px;
+}
+
+#Music #Menu #PlaylistContainer #ActionFastPL .fa-edit:hover {
+  color: #0084ff;
+}
+
+#Music #Menu #PlaylistContainer #ActionFastPL .fa-trash:hover {
+  color: #f3213d;
+}
+
 #Music #Menu #PlaylistContainer .Playlist.active {
   color: rgba(17, 17, 17, 0.815);
   font-weight: bold;

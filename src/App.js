@@ -6,7 +6,7 @@ import YtDownloader from "./Components/App/Static/YtDownloader";
 // Context
 import AppContext from "./Context/AppContext";
 // Fn
-import { GETMusic } from "./includes/fonctions";
+import { apiCall } from "./includes/fonctions";
 
 class App extends Component {
   state = {
@@ -16,11 +16,18 @@ class App extends Component {
     musicPartNow: {},
   };
 
-  async componentDidMount() {
-    this.setState({ AllMusicInfo: await GETMusic(this.props.client) });
+  componentDidMount() {
+    apiCall("/Playlist/all", "GET", {}, (result) => {
+      if (result === false) return;
+      this.setState({ AllMusicInfo: result });
+    });
   }
 
-  refresh = (added) => this.setState({ AllMusicInfo: [added] });
+  refresh = () =>
+    apiCall("/Playlist/all", "GET", {}, (result) => {
+      if (result === false) return;
+      this.setState({ AllMusicInfo: result });
+    });
 
   render() {
     const { MusicPage, AllMusicInfo, musicPartNow } = this.state;
@@ -32,7 +39,6 @@ class App extends Component {
             AllMusicInfo,
             musicPartNow,
           },
-          client: this.props.client,
           refresh: this.refresh,
         }}
       >

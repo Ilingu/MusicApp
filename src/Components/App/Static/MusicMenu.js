@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
-import gql from "graphql-tag";
-import { Mutation } from "react-apollo";
 // Context
 import AppContext from "../../../Context/AppContext";
 // Design
@@ -9,17 +6,6 @@ import { Input } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
-// Graphql
-
-const ADD_PLAYLIST = gql`
-  mutation AddPlaylist($name: String!, $ImageURL: String!) {
-    addPlaylist(name: $name, ImageURL: $ImageURL) {
-      _id
-      name
-      ImageURL
-    }
-  }
-`;
 
 class MusicMenu extends Component {
   static contextType = AppContext;
@@ -95,14 +81,13 @@ class MusicMenu extends Component {
     );
   };
 
-  GetRdaMemes = async () => {
-    return (await axios.get("https://api.imgflip.com/get_memes")).data.data
-      .memes[Math.round(Math.random() * 99)].url;
-  };
-
   async componentDidMount() {
     this.resizeEl();
   }
+
+  handleEdit = () => {};
+
+  handleSupp = () => {};
 
   render() {
     const { AllMusicInfo } = this.context.state;
@@ -119,7 +104,19 @@ class MusicMenu extends Component {
             : this.props.newActive(data._id)
         }
       >
-        {data.name}
+        {data.name}{" "}
+        {this.props.ActivePlaylist === data._id ? (
+          <div id="ActionFastPL">
+            <span
+              className="fas fa-edit"
+              onClick={() => this.handleEdit(data._id)}
+            ></span>
+            <span
+              className="fas fa-trash"
+              onClick={() => this.handleSupp(data._id)}
+            ></span>
+          </div>
+        ) : null}
       </div>
     ));
 
@@ -132,26 +129,12 @@ class MusicMenu extends Component {
           {PlaylistJSX}
 
           {this.props.newP ? (
-            <Mutation mutation={ADD_PLAYLIST}>
-              {(addPlaylist, { data }) => (
-                <Search
-                  placeholder="Name Playlist"
-                  onSearch={async (value) => {
-                    if (this.props.addPlaylist(value)) {
-                      const added = await addPlaylist({
-                        variables: {
-                          name: value,
-                          ImageURL: await this.GetRdaMemes(),
-                        },
-                      });
-                      this.context.refresh(added.data.addPlaylist);
-                    }
-                  }}
-                  enterButton={<CheckOutlined />}
-                  style={{ width: `${this.props.proportion[0]}px` }}
-                />
-              )}
-            </Mutation>
+            <Search
+              placeholder="Name Playlist"
+              onSearch={(value) => this.props.addPlaylist(value)}
+              enterButton={<CheckOutlined />}
+              style={{ width: `${this.props.proportion[0]}px` }}
+            />
           ) : null}
           <div id="resizeR" className="resize R"></div>
           <div id="resizeB" className="resize B"></div>

@@ -1,11 +1,18 @@
 import React, { Component } from "react";
+import axios from "axios";
+// Context
+import AppContext from "../../../Context/AppContext";
 // Components
 import Menu from "./MusicMenu";
 import Playlist from "./Playlist";
+// Fn
+import { apiCall } from "../../../includes/fonctions";
 // Design
 import { notification } from "antd";
 
 class Music extends Component {
+  static contextType = AppContext;
+
   state = {
     proportion: JSON.parse(window.localStorage.getItem("Proportion")),
     active: "",
@@ -19,7 +26,12 @@ class Music extends Component {
     });
   };
 
-  addPlaylist = (name) => {
+  GetRdaMemes = async () => {
+    return (await axios.get("https://api.imgflip.com/get_memes")).data.data
+      .memes[Math.round(Math.random() * 99)].url;
+  };
+
+  addPlaylist = async (name) => {
     if (
       !name ||
       typeof name !== "string" ||
@@ -33,7 +45,18 @@ class Music extends Component {
 
       return false;
     } else {
-      this.setState({ newP: false });
+      apiCall(
+        "/Playlist/addPL",
+        "POST",
+        {
+          name,
+          ImageURL: await this.GetRdaMemes(),
+        },
+        () => {
+          this.context.refresh();
+          this.setState({ newP: false });
+        }
+      );
 
       return true;
     }
