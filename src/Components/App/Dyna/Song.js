@@ -6,6 +6,7 @@ const Song = ({
   imageUrl,
   title,
   author,
+  PlayMusic,
   id,
   AllMusicInfo,
   ActivePlaylist,
@@ -23,7 +24,7 @@ const Song = ({
   const menu = (
     <Menu>
       <Menu.Item>
-        <Button variant="primary" block>
+        <Button variant="primary" block onClick={() => PlayMusic(id)}>
           <span className="fas fa-play"></span> Jouer
         </Button>
       </Menu.Item>
@@ -51,7 +52,7 @@ const Song = ({
   return (
     <div className="Song">
       <img src={imageUrl} alt="Music" />
-      <div className="PlayMusic">
+      <div className="PlayMusic" onClick={() => PlayMusic(id)}>
         <span className="fas fa-play"></span>
       </div>
       <h3>{title}</h3>

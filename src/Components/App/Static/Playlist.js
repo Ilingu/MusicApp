@@ -24,7 +24,7 @@ class Playlist extends Component {
     Method: 1,
     // Form
     YTURL: "",
-    File: "",
+    File: {},
     titleMusic: "",
     nameArtist: "",
     IsGoodForRequest: false,
@@ -108,17 +108,65 @@ class Playlist extends Component {
         }
       );
     } else if (
-      Method === 3 &&
-      File.length === 1 &&
-      titleMusic &&
+      Method === 2 &&
+      File !== {} &&
       typeof titleMusic === "string" &&
       titleMusic.trim().length !== 0 &&
       titleMusic !== "" &&
-      nameArtist &&
       typeof nameArtist === "string" &&
       nameArtist.trim().length !== 0 &&
       nameArtist !== ""
     ) {
+      const { PlaylistInfoSave } = this.state;
+      let formData = new FormData();
+      let ImageRoute = null;
+      let IsGood = true;
+      let MusicInfo = await this.GetMusicInfo(
+        `https://theaudiodb.com/api/v1/json/1/searchtrack.php?s=${this.remplaceString(
+          nameArtist.toLowerCase(),
+          [" ", "%20"]
+        )}&t=${titleMusic.toLowerCase()}`
+      );
+      if (MusicInfo.track === null)
+        MusicInfo = await this.GetMusicInfo(
+          `https://www.theaudiodb.com/api/v1/json/1/search.php?s=${nameArtist}`
+        );
+
+      ImageRoute = MusicInfo.track || MusicInfo.artists;
+      if (!ImageRoute) IsGood = false;
+
+      // FormData
+      formData.set("idPlaylist", PlaylistInfoSave._id);
+      formData.set("title", titleMusic);
+      formData.set("author", nameArtist);
+      formData.set(
+        "ImageUrl",
+        IsGood
+          ? ImageRoute[0][MusicInfo.track ? "strTrackThumb" : "strArtistThumb"]
+          : null
+      );
+      formData.append("FileAudio", File);
+
+      apiCall(
+        "/Playlist/addMusic",
+        "POST",
+        formData,
+        (result) => {
+          if (result === false) {
+            notification["error"]({
+              message: "Erreur Music non ajouté",
+              description:
+                "Un problème à eu lieu lors de l'enregistrement de la Music (ce n'est pas de votre faute), vérifier votre connection et veuillez réessayer plus tard",
+            });
+            return;
+          }
+          this.context.refresh();
+          message.success(`Votre music a bien enregistrée !`, 3);
+        },
+        {
+          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+        }
+      );
     } else {
       notification["error"]({
         message: "Error",
@@ -129,7 +177,11 @@ class Playlist extends Component {
     this.CloseModal();
   };
 
-  Play = () => {};
+  Play = (id) => {
+    if (this.context.state.musicPart.now === null) {
+      this.context.GetMusicFile(id, this.props.ActivePlaylist);
+    }
+  };
 
   edit = () => {};
 
@@ -156,6 +208,7 @@ class Playlist extends Component {
       ModalChooseMethod: false,
       ModalAddMusic: false,
       titleMusic: "",
+      File: {},
       nameArtist: "",
       YTURL: "",
     });
@@ -208,20 +261,18 @@ class Playlist extends Component {
       PlaylistInfo.MusicInside &&
       PlaylistInfo.MusicInside.length > 0
     ) {
-      MusicList = PlaylistInfo.MusicInside.map((data, i) => {
-        console.log(data, i);
-        return (
-          <Song
-            key={i}
-            id={data.dbFilename}
-            title={data.title}
-            author={data.author}
-            imageUrl={data.ImageUrl}
-            AllMusicInfo={AllMusicInfo}
-            ActivePlaylist={ActivePlaylist}
-          />
-        );
-      });
+      MusicList = PlaylistInfo.MusicInside.map((data, i) => (
+        <Song
+          key={i}
+          id={data.dbFilename}
+          title={data.title}
+          author={data.author}
+          imageUrl={data.ImageUrl}
+          PlayMusic={(id) => this.Play(id)}
+          AllMusicInfo={AllMusicInfo}
+          ActivePlaylist={ActivePlaylist}
+        />
+      ));
     }
 
     if (AllMusicInfo.length) {
@@ -314,7 +365,7 @@ class Playlist extends Component {
                   >
                     {txt}
                   </Button>
-                  {i === 2 ? null : "OU"}
+                  {i === 1 ? null : "OU"}
                 </Fragment>
               ))}
             </Modal.Body>
@@ -381,7 +432,10 @@ class Playlist extends Component {
                     <input
                       type="file"
                       onChange={(event) => {
-                        this.setState({ File: event.target.files[0] });
+                        this.setState({
+                          File: event.target.files[0],
+                          titleMusic: event.target.files[0].name.split(".")[0],
+                        });
                         message.success(
                           `The File ${event.target.files[0].name} has been saved correcty,`,
                           5
@@ -394,6 +448,7 @@ class Playlist extends Component {
                       id="audioFile"
                       accept=".mp3, .wav"
                     />
+                    <br />
                     <Form.Label>Nom de la Musique</Form.Label>
                     <Form.Control
                       type="text"
@@ -402,7 +457,7 @@ class Playlist extends Component {
                       onChange={(event) =>
                         this.setState({ titleMusic: event.target.value })
                       }
-                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                      placeholder="Thriller"
                     />
                     <Form.Label>Nom de l'artiste</Form.Label>
                     <Form.Control
@@ -412,7 +467,7 @@ class Playlist extends Component {
                       onChange={(event) =>
                         this.setState({ nameArtist: event.target.value })
                       }
-                      placeholder="L'url, ex: https://www.youtube.com/watch?v=MtN1YnoL46Q"
+                      placeholder="Michael Jackson"
                     />
                   </Form.Group>
                 )}
