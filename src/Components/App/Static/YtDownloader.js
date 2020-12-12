@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import toWav from "audiobuffer-to-wav";
 import xhr from "xhr";
+import { Howl } from "howler";
 // Fn
 import { apiCall } from "../../../includes/fonctions";
 // Desing
@@ -12,8 +13,10 @@ const YtDownloader = () => {
   const [YTURL, setYTURL] = useState("");
   const [OnDownload, setDownload] = useState(false);
   const [OnFinished, setFinished] = useState(false);
+  const [Paused, setPaused] = useState(false);
   const [DataFile, setDataFile] = useState(new ArrayBuffer());
   // App
+  let NowSound = null;
   const checkURL = (url) => {
     if (
       typeof url === "string" &&
@@ -65,6 +68,16 @@ const YtDownloader = () => {
     });
   };
 
+  const NewIntanceMusic = () => {
+    NowSound = new Howl({
+      src: [
+        `data:audio/mp3;base64,${Buffer.from(DataFile).toString("base64")}`,
+      ],
+      loop: true,
+    });
+    NowSound.play();
+  };
+
   if (OnFinished) {
     const audioCtx = new (AudioContext || window.webkitAudioContext)();
     xhr(
@@ -95,12 +108,7 @@ const YtDownloader = () => {
       <div id="contentYTLD">
         {OnFinished ? (
           <div id="DownloadYTFile">
-            <audio
-              controls
-              src={`data:audio/wav;base64,${Buffer.from(DataFile).toString(
-                "base64"
-              )}`}
-            ></audio>
+            {NewIntanceMusic()}
             <a
               href="/Home"
               onClick={() => {
@@ -112,6 +120,7 @@ const YtDownloader = () => {
               <span className="fas fa-download"></span> Télécharger
             </a>
             <Button
+              id="BackBtnYtDL"
               variant="outline-primary"
               onClick={() => {
                 setFinished(false);
@@ -146,6 +155,49 @@ const YtDownloader = () => {
           </Form>
         ) : null}
       </div>
+      <section id="FileAudio">
+        <header>
+          <h1>Lire un Fichier audio (mp3)</h1>
+        </header>
+        <input
+          id="input"
+          type="file"
+          onChange={(event) => {
+            const fileReader = new FileReader();
+            fileReader.addEventListener("load", (e) => {
+              if (e && e.target && e.target.result && files !== null) {
+                const arrayBuffer = e.target.result;
+                const base64Str = Buffer.from(arrayBuffer).toString("base64");
+                const contentType = "audio/mp3";
+                if (NowSound !== null) {
+                  NowSound.stop();
+                  NowSound = null;
+                }
+                NowSound = new Howl({
+                  src: [`data:${contentType};base64,${base64Str}`],
+                });
+                NowSound.play();
+              }
+            });
+            const files = event.target.files;
+            fileReader.readAsArrayBuffer(files[0]);
+          }}
+          accept="audio/mp3"
+        ></input>
+      </section>
+      <br />
+      <br />
+      <Button
+        variant="danger"
+        onClick={() => {
+          if (NowSound !== null) {
+            NowSound.stop();
+            NowSound = null;
+          }
+        }}
+      >
+        <span className="fas fa-stop"></span> Stop la musique
+      </Button>
     </section>
   );
 };

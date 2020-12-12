@@ -407,7 +407,12 @@ a {
   margin-top: 20px;
 }
 
-#YTLD #contentYTLD #DownloadYTFile button {
+#YTLD #contentYTLD #DownloadYTFile #PlayBtnYtDL {
+  color: rgba(17, 17, 17, 0.815) !important;
+  background: transparent;
+}
+
+#YTLD #contentYTLD #DownloadYTFile #BackBtnYtDL {
   position: absolute;
   border-radius: 50px;
   top: calc(50% - 38px / 2);
@@ -429,5 +434,10 @@ a {
           align-items: center;
   top: calc(50% - 47px / 2);
   left: calc(50% - 167px / 2);
+}
+
+#YTLD #FileAudio h1 {
+  font-size: 24px !important;
+  color: rgba(17, 17, 17, 0.815);
 }
 /*# sourceMappingURL=Index.css.map */

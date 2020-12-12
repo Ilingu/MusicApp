@@ -9,6 +9,8 @@
     "bootstrap": "^4.5.2",
     "fast-xml-parser": "^3.17.4",
     "graphql": "^15.3.0",
+    "howler": "^2.2.1",
+    "idb": "^5.0.8",
     "nodemailer": "^6.4.11",
     "react": "^16.8.6",
     "react-audio-player": "^0.13.0",

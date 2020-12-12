@@ -10,6 +10,8 @@ import "./CSS/Index.css";
 import "./CSS/Anim.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/antd.css";
+// IdexedDB
+import "./initIndexedDB";
 // PWA
 import * as serviceWorker from "./serviceWorker";
 

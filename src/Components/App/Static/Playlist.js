@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import axios from "axios";
+import { Howl } from "howler";
 // Components
 import Header from "../../Design/HeaderMusic";
 import Song from "../Dyna/Song";
@@ -20,6 +21,7 @@ class Playlist extends Component {
   state = {
     PlaylistInfoSave: null,
     noPlaylist: false,
+    Volume: 1,
     Play: false,
     Method: 1,
     // Form
@@ -32,6 +34,8 @@ class Playlist extends Component {
     ModalChooseMethod: false,
     ModalAddMusic: false,
   };
+
+  NowSound = null;
 
   GetMusicInfo = async (url) => (await axios.get(url)).data;
 
@@ -178,12 +182,54 @@ class Playlist extends Component {
   };
 
   Play = (id) => {
-    if (this.context.state.musicPart.now === null) {
-      this.context.GetMusicFile(id, this.props.ActivePlaylist);
+    const { AllMusicInfo } = this.context.state;
+    const thisPlaylist = AllMusicInfo.filter(
+      (Pl) => Pl._id === this.props.ActivePlaylist
+    )[0];
+    const thisMusic = thisPlaylist.MusicInside.indexOf(
+        AllMusicInfo.filter(
+          (Pl) => Pl._id === this.props.ActivePlaylist
+        )[0].MusicInside.filter((music) => music.dbFilename === id)[0]
+      ),
+      NextMusic =
+        thisPlaylist.MusicInside[thisMusic + 1] !== undefined
+          ? thisMusic + 1
+          : false,
+      PrevMusic = thisMusic - 1 < 0 ? false : thisMusic - 1;
+
+    const PlayMusicFile = () => {
+      const base64Str = Buffer.from(this.context.state.musicPart.now).toString(
+        "base64"
+      );
+      this.NowSound = new Howl({
+        src: [`data:audio/mp3;base64,${base64Str}`],
+      });
+      this.NowSound.play();
+      this.setState({ Play: true });
+      this.NowSound.on("end", () => GetFile());
+    };
+
+    function GetFile() {
+      // GetFile
+      this.context.GetMusicFile(
+        thisMusic,
+        NextMusic,
+        PrevMusic,
+        thisPlaylist,
+        PlayMusicFile
+      );
     }
   };
 
-  edit = () => {};
+  UnPaused = () => {};
+
+  Pause = () => {
+    this.NowSound.pause();
+  };
+
+  Volume = () => {
+    // const { Volume } = this.state;
+  };
 
   delete = () => {};
 
@@ -322,7 +368,6 @@ class Playlist extends Component {
                     this.setState({ Play: true });
                     this.Play();
                   },
-                  this.edit,
                   this.showDeleteConfirm,
                 ]}
               />
