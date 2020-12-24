@@ -238,6 +238,7 @@ a {
 }
 
 #Music #PlaylistWithMusic header {
+  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -278,6 +279,13 @@ a {
 
 #Music #PlaylistWithMusic header .action .BouttonPerso span:hover {
   color: rgba(255, 255, 255, 0.85) !important;
+}
+
+#Music #PlaylistWithMusic header #PlayNowParams {
+  text-align: center;
+  position: absolute;
+  left: calc(50% - 25%);
+  width: 50%;
 }
 
 #Music #PlaylistWithMusic #containerMusicList {

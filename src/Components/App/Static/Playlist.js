@@ -24,6 +24,12 @@ class Playlist extends Component {
     Volume: 1,
     Play: false,
     Method: 1,
+    // InMusic
+    title: null,
+    author: null,
+    volume: 1,
+    Paused: false,
+    time: null,
     // Form
     YTURL: "",
     File: {},
@@ -181,35 +187,65 @@ class Playlist extends Component {
     this.CloseModal();
   };
 
-  Play = (id) => {
+  Play = (id = null) => {
     const { AllMusicInfo } = this.context.state;
+    const { Volume } = this.state;
     const thisPlaylist = AllMusicInfo.filter(
       (Pl) => Pl._id === this.props.ActivePlaylist
     )[0];
-    const thisMusic = thisPlaylist.MusicInside.indexOf(
+    let thisMusic, NextMusic, PrevMusic;
+    if (id === null) {
+      PrevMusic = false;
+      thisMusic = 0;
+      NextMusic = 1;
+    } else {
+      thisMusic = thisPlaylist.MusicInside.indexOf(
         AllMusicInfo.filter(
           (Pl) => Pl._id === this.props.ActivePlaylist
         )[0].MusicInside.filter((music) => music.dbFilename === id)[0]
-      ),
+      );
       NextMusic =
         thisPlaylist.MusicInside[thisMusic + 1] !== undefined
           ? thisMusic + 1
-          : false,
+          : false;
       PrevMusic = thisMusic - 1 < 0 ? false : thisMusic - 1;
+    }
 
     const PlayMusicFile = () => {
+      if (this.NowSound != null) {
+        this.NowSound.stop();
+        this.NowSound = null;
+      }
+      if (this.context.state.musicPart.now === null) {
+        this.cancelMusic();
+        return;
+      }
       const base64Str = Buffer.from(this.context.state.musicPart.now).toString(
         "base64"
       );
       this.NowSound = new Howl({
         src: [`data:audio/mp3;base64,${base64Str}`],
+        loop: false,
       });
       this.NowSound.play();
-      this.setState({ Play: true });
-      this.NowSound.on("end", () => GetFile());
+      this.setState({
+        Play: true,
+        title: thisPlaylist.MusicInside[thisMusic].title,
+        author: thisPlaylist.MusicInside[thisMusic].author,
+        volume: Volume,
+        time: this.NowSound.duration(),
+      });
+      // +1 music
+      this.NowSound.on("end", () => {
+        thisMusic = NextMusic;
+        NextMusic += 1;
+        PrevMusic = thisMusic;
+
+        GetFile();
+      });
     };
 
-    function GetFile() {
+    const GetFile = () => {
       // GetFile
       this.context.GetMusicFile(
         thisMusic,
@@ -218,20 +254,52 @@ class Playlist extends Component {
         thisPlaylist,
         PlayMusicFile
       );
-    }
+    };
+    GetFile();
   };
 
-  UnPaused = () => {};
+  UnPaused = () => {
+    this.NowSound.play();
+    this.setState({ Paused: false });
+  };
 
   Pause = () => {
     this.NowSound.pause();
+    this.setState({ Paused: true });
   };
 
   Volume = () => {
-    // const { Volume } = this.state;
+    const { Volume } = this.state;
+    this.NowSound.volume(Volume);
   };
 
-  delete = () => {};
+  removeMusic = (IDFilename, idPlaylist) => {
+    apiCall(
+      "/Playlist/deleteMusicFile",
+      "DELETE",
+      { IDFilename, idPlaylist },
+      (result) => {
+        if (result === false) {
+          notification["error"]({
+            message: "Erreur Music non supprimé",
+            description:
+              "Impossible de supprimé cette musique, réessayer ultérieurement",
+          });
+          return;
+        }
+        const { AllMusicInfo } = this.context.state;
+        const thisPlaylist = AllMusicInfo.filter(
+          (Pl) => Pl._id === idPlaylist
+        )[0];
+        const MusicSupp = thisPlaylist.MusicInside.indexOf(
+          AllMusicInfo.filter(
+            (Pl) => Pl._id === idPlaylist
+          )[0].MusicInside.filter((music) => music.IDFilename === IDFilename)[0]
+        );
+        this.context.DeleteMusicIdb(MusicSupp);
+      }
+    );
+  };
 
   showDeleteConfirm = () => {
     confirm({
@@ -277,12 +345,29 @@ class Playlist extends Component {
     return Spinners;
   };
 
+  cancelMusic = () => {
+    this.setState({
+      Play: false,
+      title: null,
+      author: null,
+      volume: 1,
+      Paused: false,
+      time: null,
+    });
+  };
+
   timeoutSpinning = setTimeout(() => this.setState({ noPlaylist: true }), 3000);
 
   render() {
     const {
       PlaylistInfoSave,
       noPlaylist,
+      Play,
+      title,
+      time,
+      Paused,
+      author,
+      Volume,
       ModalChooseMethod,
       ModalAddMusic,
       Method,
@@ -313,6 +398,7 @@ class Playlist extends Component {
           id={data.dbFilename}
           title={data.title}
           author={data.author}
+          removeMusic={() => this.removeMusic(data.IDFilename, ActivePlaylist)}
           imageUrl={data.ImageUrl}
           PlayMusic={(id) => this.Play(id)}
           AllMusicInfo={AllMusicInfo}
@@ -361,7 +447,13 @@ class Playlist extends Component {
                 ImgUrl={PlaylistInfo.ImageURL}
                 name={PlaylistInfo.name}
                 nbMusic={PlaylistInfo.MusicInside.length}
+                ISPlay={Play}
                 TpsTotal="En Travaux"
+                title={title}
+                paused={Paused}
+                author={author}
+                volume={Volume}
+                time={time}
                 fn={[
                   () => this.setState({ ModalChooseMethod: true }),
                   () => {
@@ -369,6 +461,11 @@ class Playlist extends Component {
                     this.Play();
                   },
                   this.showDeleteConfirm,
+                  (Volume) => this.setState({ Volume }, this.Volume),
+                  () => {
+                    if (Paused) this.UnPaused();
+                    else this.Pause();
+                  },
                 ]}
               />
               <div id="containerMusicList">

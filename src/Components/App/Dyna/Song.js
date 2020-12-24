@@ -9,6 +9,7 @@ const Song = ({
   PlayMusic,
   id,
   AllMusicInfo,
+  removeMusic,
   ActivePlaylist,
 }) => {
   const menu2 = (
@@ -43,7 +44,7 @@ const Song = ({
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item>
-        <Button variant="danger" block>
+        <Button variant="danger" block onClick={removeMusic}>
           <span className="fas fa-trash"></span>
         </Button>
       </Menu.Item>

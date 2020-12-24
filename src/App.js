@@ -43,9 +43,25 @@ class App extends Component {
     else return await store.get(id);
   };
 
+  DeleteMusicIdb = async (index) => {
+    const db = await openDB("IncraMusic", 1);
+    const store = db
+      .transaction("MusicFile", "readwrite")
+      .objectStore("MusicFile");
+    let AllMusic = await store.getAll();
+    if (AllMusic) {
+      const ClearAll = await store.clear();
+      if (ClearAll) {
+        AllMusic.splice(index, 1);
+        AllMusic.forEach((MusicObj) => {
+          store.add(MusicObj);
+        });
+      }
+    }
+  };
+
   isMusicAlreadyStorage = async (id) => {
     const MusicFiles = await this.loadMusicFiles(false);
-    console.log(MusicFiles);
 
     if (MusicFiles.length === 0) return false;
     let Exists = false;
@@ -54,7 +70,6 @@ class App extends Component {
         Exists = true;
       }
     });
-    console.log(Exists);
     return Exists;
   };
 
@@ -82,7 +97,10 @@ class App extends Component {
     const MusicFile = { ...this.state.musicPart };
 
     new Promise(async (resolve, reject) => {
-      if (!(await this.isMusicAlreadyStorage(thisMusic))) {
+      if (
+        thisMusic !== false &&
+        !(await this.isMusicAlreadyStorage(thisMusic))
+      ) {
         apiCall(
           "/Playlist/GetMusicFile",
           "POST",
@@ -210,6 +228,7 @@ class App extends Component {
         }
       });
   };
+
   refresh = () =>
     apiCall("/Playlist/all", "GET", {}, (result) => {
       if (result === false) {
@@ -235,6 +254,7 @@ class App extends Component {
           },
           refresh: this.refresh,
           GetMusicFile: this.GetMusicFile,
+          DeleteMusicIdb: this.DeleteMusicIdb,
         }}
       >
         <Header

@@ -1,7 +1,7 @@
 import React from "react";
 // Design
 import { Button } from "react-bootstrap";
-import { Dropdown, Menu } from "antd";
+import { Dropdown, Menu, Slider } from "antd";
 
 const HeaderMusic = ({
   ImgUrl,
@@ -12,6 +12,8 @@ const HeaderMusic = ({
   author,
   volume,
   time,
+  paused,
+  ISPlay,
   fn,
 }) => {
   const menu = (
@@ -27,12 +29,7 @@ const HeaderMusic = ({
         </Button>
       </Menu.Item>
       <Menu.Item>
-        <Button variant="info" block onClick={fn[2]}>
-          <span className="fas fa-edit"></span>
-        </Button>
-      </Menu.Item>
-      <Menu.Item>
-        <Button variant="danger" block onClick={fn[3]}>
+        <Button variant="danger" block onClick={fn[2]}>
           <span className="fas fa-trash"></span>
         </Button>
       </Menu.Item>
@@ -52,13 +49,29 @@ const HeaderMusic = ({
           </div>
         </div>
       </div>
-      <div className="PlayNow">
-        {/* title */}
-        {/* author */}
-        {/* Volume */}
-        {/* Repeat */}
-        {/* Temps sur total de la music (progressBar) */}
-      </div>
+      {ISPlay ? (
+        <div id="PlayNowParams">
+          <h4>
+            <span
+              onClick={fn[4]}
+              className={`fas ${paused ? "fa-play" : "fa-pause"}`}
+            ></span>{" "}
+            {title}
+          </h4>
+          <h6>{author}</h6>
+          <div id="VolumeRange">
+            <Slider
+              min={0}
+              max={1}
+              onChange={(value) => fn[3](value)}
+              value={typeof volume === "number" ? volume : 0}
+              step={0.01}
+            />
+          </div>
+          {/* Repeat */}
+          {/* Temps sur total de la music (progressBar) */}
+        </div>
+      ) : null}
       <div className="action">
         <Button className="BouttonPerso" variant="light">
           Aléatoire <span className="fas fa-random"></span>
